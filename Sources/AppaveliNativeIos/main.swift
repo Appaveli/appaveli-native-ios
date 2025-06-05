@@ -40,8 +40,9 @@ case "generate":
     }
     let subcommand = arguments[2]
     let name = arguments[3]
+    let withTests = arguments.contains("--with-tests")
     if subcommand == "feature" {
-        Generator.createFeature(named: name)
+        Generator.createFeature(named: name, withTests: withTests)
     } else {
         print("❌ Unknown generate command: \(subcommand)")
     }

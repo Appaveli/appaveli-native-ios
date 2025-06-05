@@ -4,7 +4,7 @@ import XCTest
 final class GeneratorTests: XCTestCase {
     func testCreateFeature() {
         let featureName = "TestFeature"
-        Generator.createFeature(named: featureName)
+        Generator.createFeature(named: featureName, withTests: false)
 
         let fileManager = FileManager.default
         let basePath = fileManager.currentDirectoryPath + "/Features/\(featureName)"
