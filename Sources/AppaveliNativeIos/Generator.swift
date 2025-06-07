@@ -3,7 +3,7 @@ import Foundation
 enum Generator {
     static func createNewApp(named appName: String) {
         let fileManager = FileManager.default
-        let root = FileManager.default.currentDirectoryPath + "/" + appName
+        let root = fileManager.currentDirectoryPath + "/" + appName
 
         let paths = [
             "\(root)/App",
@@ -20,7 +20,7 @@ enum Generator {
 
         struct ContentView: View {
             var body: some View {
-                Text(\"Welcome to \(appName)\")
+                Text("Welcome to \(appName)")
             }
         }
 
@@ -35,9 +35,9 @@ enum Generator {
         print("✅ Created new SwiftUI app: \(appName)")
     }
 
-    static func createFeature(named name: String, withTests: Bool) {
+    static func createFeature(named name: String, withTests: Bool, isMinimal: Bool, isMVVM: Bool) {
         let fileManager = FileManager.default
-        let root = FileManager.default.currentDirectoryPath + "/Features/\(name)"
+        let root = fileManager.currentDirectoryPath + "/Features/\(name)"
 
         try? fileManager.createDirectory(atPath: root, withIntermediateDirectories: true)
 
@@ -46,32 +46,35 @@ enum Generator {
 
         struct \(name)View: View {
             var body: some View {
-                Text(\"\(name) View\")
+                Text("\(name) View")
             }
         }
         """
 
-        let viewModel = """
-        import Foundation
-
-        class \(name)ViewModel: ObservableObject {
-            // ViewModel logic here
-        }
-        """
-
-        let model = """
-        import Foundation
-
-        struct \(name)Model {
-            // Model properties here
-        }
-        """
-
         try? view.write(toFile: "\(root)/\(name)View.swift", atomically: true, encoding: .utf8)
-        try? viewModel.write(toFile: "\(root)/\(name)ViewModel.swift", atomically: true, encoding: .utf8)
-        try? model.write(toFile: "\(root)/\(name)Model.swift", atomically: true, encoding: .utf8)
-        
-        if withTests {
+
+        if isMVVM {
+            let viewModel = """
+            import Foundation
+
+            class \(name)ViewModel: ObservableObject {
+                // ViewModel logic here
+            }
+            """
+
+            let model = """
+            import Foundation
+
+            struct \(name)Model {
+                // Model properties here
+            }
+            """
+
+            try? viewModel.write(toFile: "\(root)/\(name)ViewModel.swift", atomically: true, encoding: .utf8)
+            try? model.write(toFile: "\(root)/\(name)Model.swift", atomically: true, encoding: .utf8)
+        }
+
+        if withTests && isMVVM {
             let testRoot = fileManager.currentDirectoryPath + "/Tests/AppaveliNativeIOSTests"
             try? fileManager.createDirectory(atPath: testRoot, withIntermediateDirectories: true)
             let testFile = """
@@ -87,6 +90,6 @@ enum Generator {
             try? testFile.write(toFile: "\(testRoot)/\(name)ViewModelTests.swift", atomically: true, encoding: .utf8)
         }
 
-        print("✅ Feature \(name) created with View, ViewModel, and Model")
+        print("✅ Feature \(name) created with \(isMVVM ? "View, ViewModel, Model" : "View")\(withTests && isMVVM ? " + tests" : "")")
     }
 }
