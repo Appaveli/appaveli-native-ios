@@ -7,8 +7,8 @@ if arguments.count < 2 || arguments[1] == "--help" || arguments[1] == "-h" {
     🔥 Appaveli Native iOS CLI 🔥
 
     Usage:
-      appaveli-ios new <AppName>           Create a new SwiftUI app
-      appaveli-ios generate feature <Name> Generate a new feature module
+      appaveli-ios new <AppName>                        Create a new SwiftUI app
+      appaveli-ios generate feature <Name> [--with-tests] [--minimal|--mvvm]  Generate a new feature module
 
     Options:
       -h, --help        Show this help message
@@ -35,14 +35,17 @@ case "new":
 
 case "generate":
     guard arguments.count >= 4 else {
-        print("❌ Missing parameters. Usage: appaveli-ios generate feature <FeatureName>")
+        print("❌ Missing parameters. Usage: appaveli-ios generate feature <FeatureName> [--with-tests] [--minimal|--mvvm]")
         exit(1)
     }
     let subcommand = arguments[2]
     let name = arguments[3]
     let withTests = arguments.contains("--with-tests")
+    let isMinimal = arguments.contains("--minimal")
+    let isMVVM = arguments.contains("--mvvm") || !isMinimal
+
     if subcommand == "feature" {
-        Generator.createFeature(named: name, withTests: withTests)
+        Generator.createFeature(named: name, withTests: withTests, isMinimal: isMinimal, isMVVM: isMVVM)
     } else {
         print("❌ Unknown generate command: \(subcommand)")
     }
