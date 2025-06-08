@@ -26,6 +26,7 @@ git clone https://github.com/Appaveli/appaveli-native-ios.git
 cd appaveli-native-ios
 chmod +x install.sh
 ./install.sh
+```
 
 ## 🗂 Folder Philosophy
 
@@ -42,4 +43,4 @@ MyApp/
     •    Use App/ for entry points and root-level views
     •    Use Features/ for scoped modules
     •    Use Shared/ for design tokens, constants, and utilities
-
+```
